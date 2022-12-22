@@ -4,6 +4,7 @@ import type { RouteObject } from 'react-router-dom';
 import FullScreenLoader from '../components/FullScreenLoader';
 import Layout from '../components/Layout';
 import RequireUser from '../components/requireUser';
+import RequireNoUser from '../components/RequireNoUser';
 import HomePage from '../pages/home.page';
 import LoginPage from '../pages/login.page';
 import ProfilePage from '../pages/profile.page';
@@ -24,11 +25,23 @@ const authRoutes: RouteObject = {
   children: [
     {
       path: 'login',
-      element: <LoginPage />,
+      element: <RequireNoUser />,
+      children: [
+        {
+          path: '',
+          element: <LoginPage />,
+        },
+      ],
     },
     {
       path: 'register',
-      element: <RegisterPage />,
+      element: <RequireNoUser />,
+      children: [
+        {
+          path: '',
+          element: <RegisterPage />,
+        },
+      ],
     },
     {
       path: 'verifyemail',

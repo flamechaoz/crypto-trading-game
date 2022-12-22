@@ -56,17 +56,6 @@ const LoginPage = (): JSX.Element => {
 
   const stateContext = useStateContext();
 
-  // API Get Current Logged-in user
-  const query = useQuery(['authUser', cookies.user], async () => await getMeFn(cookies.user.id), {
-    enabled: true,
-    retry: 1,
-    onSuccess: (data) => {
-      console.log(data);
-      stateContext?.dispatch({ type: 'SET_USER', payload: data });
-      navigate(from);
-    },
-  });
-
   //  API Login Mutation
   const { mutate: loginUser, isLoading } = useMutation(async (userData: LoginInput) => await loginUserFn(userData), {
     onSuccess: (data) => {
