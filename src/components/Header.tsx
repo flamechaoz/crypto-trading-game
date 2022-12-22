@@ -6,7 +6,7 @@ import { LoadingButton as _LoadingButton } from '@mui/lab';
 import { useStateContext } from '../context';
 import { useMutation } from 'react-query';
 import { logoutUserFn } from '../api/authApi';
-import { useCookies } from 'react-cookie';
+import Cookies from 'universal-cookie';
 
 const LoadingButton = styled(_LoadingButton)`
   padding: 0.4rem;
@@ -18,19 +18,20 @@ const LoadingButton = styled(_LoadingButton)`
   }
 `;
 
+const cookies = new Cookies();
+
 const Header = (): JSX.Element => {
   const navigate = useNavigate();
   const stateContext = useStateContext();
   const user = stateContext?.state.authUser;
-  const [cookies, setCookie, removeCookie] = useCookies();
 
   const { mutate: logoutUser, isLoading } = useMutation(async (refreshToken: string) => await logoutUserFn(refreshToken), {
     onSuccess: (data) => {
-      removeCookie('logged_in');
-      removeCookie('user');
-      removeCookie('refresh_token');
-      removeCookie('access_token');
-      removeCookie('user');
+      cookies.remove('logged_in');
+      cookies.remove('user');
+      cookies.remove('refresh_token');
+      cookies.remove('access_token');
+      cookies.remove('user');
       window.location.href = '/login';
     },
     onError: (error: any) => {
@@ -49,7 +50,7 @@ const Header = (): JSX.Element => {
   });
 
   const onLogoutHandler = (): void => {
-    logoutUser(cookies.refresh_token);
+    logoutUser(cookies.get('refresh_token'));
   };
 
   return (

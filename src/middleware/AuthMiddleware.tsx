@@ -13,16 +13,6 @@ const AuthMiddleware: React.FC<AuthMiddlewareProps> = ({ children }) => {
   const [cookies] = useCookies();
   const stateContext = useStateContext();
 
-  // Add a request interceptor
-  authApi.interceptors.request.use(function (config) {
-    const token = cookies.access_token;
-    if (token !== undefined) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
-    return config;
-  });
-
   const query = useQuery(['authUser', cookies.user], async () => await getMeFn(cookies.user.id), {
     enabled: !!cookies.logged_in,
     onSuccess: (data) => {

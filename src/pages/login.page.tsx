@@ -1,3 +1,4 @@
+import Cookies from 'universal-cookie';
 import { Box, Container, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -11,7 +12,6 @@ import { toast } from 'react-toastify';
 import { useMutation, useQuery } from 'react-query';
 import { getMeFn, loginUserFn } from '../api/authApi';
 import { useStateContext } from '../context';
-import { useCookies } from 'react-cookie';
 
 const LoadingButton = styled(_LoadingButton)`
   padding: 0.6rem 0;
@@ -41,10 +41,11 @@ const loginSchema = object({
     .max(32, 'Password must be less than 32 characters'),
 });
 
+const cookies = new Cookies();
+
 export type LoginInput = TypeOf<typeof loginSchema>;
 
 const LoginPage = (): JSX.Element => {
-  const [cookies, setCookies] = useCookies();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -60,11 +61,11 @@ const LoginPage = (): JSX.Element => {
   const { mutate: loginUser, isLoading } = useMutation(async (userData: LoginInput) => await loginUserFn(userData), {
     onSuccess: (data) => {
       stateContext?.dispatch({ type: 'SET_USER', payload: data.user });
-      setCookies('logged_in', true);
-      setCookies('user', data.user);
-      setCookies('refresh_token', data.tokens.refresh.token);
-      setCookies('access_token', data.tokens.access.token);
-      setCookies('user', data.user);
+      cookies.set('logged_in', true);
+      cookies.set('user', data.user);
+      cookies.set('refresh_token', data.tokens.refresh.token, { expires: new Date(data.tokens.refresh.expires) });
+      cookies.set('access_token', data.tokens.access.token, { expires: new Date(data.tokens.access.expires) });
+      cookies.set('user', data.user);
       toast.success('You successfully logged in');
       navigate(from);
     },

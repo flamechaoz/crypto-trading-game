@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 import { LoginInput } from '../pages/login.page';
 import { RegisterInput } from '../pages/register.page';
 import { ITokens, IAuthResponse, IUser } from './types';
@@ -9,12 +10,25 @@ export const authApi = axios.create({
   withCredentials: true,
 });
 
+const cookies = new Cookies();
+const refreshToken = cookies.get('refresh_token');
+
 authApi.defaults.headers.common['Content-Type'] = 'application/json';
 
 export const refreshAccessTokenFn = async (myRefreshToken: string): Promise<ITokens> => {
   const response = await authApi.post<ITokens>('auth/refresh-tokens', { refreshToken: myRefreshToken });
   return response.data;
 };
+
+authApi.interceptors.request.use(function (config) {
+  const accessToken = cookies.get('access_token');
+  console.log('intercep req');
+  if (accessToken !== undefined) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+
+  return config;
+});
 
 authApi.interceptors.response.use(
   (response) => {
@@ -23,9 +37,11 @@ authApi.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     const errMessage = error.response.data.message as string;
-    if (errMessage.includes('authenticate') && !originalRequest._retry) {
+    if (errMessage.includes('authenticate') && !originalRequest._retry && refreshToken !== undefined) {
       originalRequest._retry = true;
-      await refreshAccessTokenFn();
+      const tokens = await refreshAccessTokenFn(refreshToken);
+      cookies.set('refresh_token', tokens.refresh.token, { expires: new Date(tokens.refresh.expires) });
+      cookies.set('access_token', tokens.access.token, { expires: new Date(tokens.access.expires) });
       return await authApi(originalRequest);
     }
     return await Promise.reject(error);

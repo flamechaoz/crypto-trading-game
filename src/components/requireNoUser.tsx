@@ -10,8 +10,6 @@ const RequireNoUser = (): JSX.Element => {
   const location = useLocation();
   const stateContext = useStateContext();
 
-  console.log('require no user');
-
   const {
     isLoading,
     isFetching,
