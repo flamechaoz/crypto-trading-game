@@ -4,7 +4,7 @@ import type { RouteObject } from 'react-router-dom';
 import FullScreenLoader from '../components/FullScreenLoader';
 import Layout from '../components/Layout';
 import RequireUser from '../components/requireUser';
-import RequireNoUser from '../components/RequireNoUser';
+import RequireNoUser from '../components/requireNoUser';
 import HomePage from '../pages/home.page';
 import LoginPage from '../pages/login.page';
 import ProfilePage from '../pages/profile.page';
