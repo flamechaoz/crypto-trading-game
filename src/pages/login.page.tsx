@@ -5,12 +5,12 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import FormInput from '../components/FormInput';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LoadingButton as _LoadingButton } from '@mui/lab';
 import { toast } from 'react-toastify';
-import { useMutation, useQuery } from 'react-query';
-import { getMeFn, loginUserFn } from '../api/authApi';
+import { useMutation } from 'react-query';
+import { loginUserFn } from '../api/authApi';
 import { useStateContext } from '../context';
 
 const LoadingButton = styled(_LoadingButton)`
@@ -65,7 +65,6 @@ const LoginPage = (): JSX.Element => {
       cookies.set('user', data.user);
       cookies.set('refresh_token', data.tokens.refresh.token, { expires: new Date(data.tokens.refresh.expires) });
       cookies.set('access_token', data.tokens.access.token, { expires: new Date(data.tokens.access.expires) });
-      cookies.set('user', data.user);
       toast.success('You successfully logged in');
       navigate(from);
     },

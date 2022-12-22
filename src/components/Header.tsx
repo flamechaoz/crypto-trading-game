@@ -31,7 +31,6 @@ const Header = (): JSX.Element => {
       cookies.remove('user');
       cookies.remove('refresh_token');
       cookies.remove('access_token');
-      cookies.remove('user');
       window.location.href = '/login';
     },
     onError: (error: any) => {
@@ -50,7 +49,8 @@ const Header = (): JSX.Element => {
   });
 
   const onLogoutHandler = (): void => {
-    logoutUser(cookies.get('refresh_token'));
+    const refreshToken = cookies.get<string>('refresh_token');
+    logoutUser(refreshToken);
   };
 
   return (

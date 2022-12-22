@@ -11,7 +11,6 @@ export const authApi = axios.create({
 });
 
 const cookies = new Cookies();
-const refreshToken = cookies.get('refresh_token');
 
 authApi.defaults.headers.common['Content-Type'] = 'application/json';
 
@@ -21,8 +20,7 @@ export const refreshAccessTokenFn = async (myRefreshToken: string): Promise<ITok
 };
 
 authApi.interceptors.request.use(function (config) {
-  const accessToken = cookies.get('access_token');
-  console.log('intercep req');
+  const accessToken = cookies.get<string>('access_token');
   if (accessToken !== undefined) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
@@ -37,8 +35,16 @@ authApi.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     const errMessage = error.response.data.message as string;
-    if (errMessage.includes('authenticate') && !originalRequest._retry && refreshToken !== undefined) {
-      originalRequest._retry = true;
+    const isLoggedIn = cookies.get<boolean>('logged_in');
+
+    if (errMessage.includes('authenticate') && isLoggedIn) {
+      const refreshToken = cookies.get<string>('refresh_token');
+
+      if (refreshToken === undefined) {
+        error.response.data.message = 'Please re-login';
+        return await Promise.reject(error);
+      }
+
       const tokens = await refreshAccessTokenFn(refreshToken);
       cookies.set('refresh_token', tokens.refresh.token, { expires: new Date(tokens.refresh.expires) });
       cookies.set('access_token', tokens.access.token, { expires: new Date(tokens.access.expires) });

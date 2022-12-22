@@ -6,7 +6,6 @@ import Layout from '../components/Layout';
 import RequireUser from '../components/requireUser';
 import RequireNoUser from '../components/requireNoUser';
 import HomePage from '../pages/home.page';
-import LoginPage from '../pages/login.page';
 import ProfilePage from '../pages/profile.page';
 
 const Loadable = (Component: React.ComponentType<any>) => (props: JSX.IntrinsicAttributes) =>
@@ -17,6 +16,7 @@ const Loadable = (Component: React.ComponentType<any>) => (props: JSX.IntrinsicA
   );
 
 const RegisterPage = Loadable(lazy(async () => await import('../pages/register.page')));
+const LoginPage = Loadable(lazy(async () => await import('../pages/login.page')));
 const UnauthorizePage = Loadable(lazy(async () => await import('../pages/unauthorize.page')));
 const EmailVerificationPage = Loadable(lazy(async () => await import('../pages/verifyemail.page')));
 

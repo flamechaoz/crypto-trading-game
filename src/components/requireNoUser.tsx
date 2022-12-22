@@ -15,6 +15,7 @@ const RequireNoUser = (): JSX.Element => {
     isFetching,
     data: user,
   } = useQuery(['authUser', cookies.user], async () => await getMeFn(cookies.user.id), {
+    enabled: !!cookies.logged_in,
     retry: 1,
     onSuccess: (data) => {
       stateContext?.dispatch({ type: 'SET_USER', payload: data });
