@@ -2,9 +2,8 @@ import { Box, Container, Typography } from '@mui/material';
 
 const HomePage = (): JSX.Element => {
   return (
-    <Container maxWidth={false} sx={{ backgroundColor: '#2363eb', minHeight: '100vh', pt: '5rem' }}>
+    <Container maxWidth={false} sx={{ backgroundColor: '#2363eb', minHeight: '100%', pt: '5rem', position: 'fixed' }}>
       <Box
-        maxWidth="md"
         sx={{
           backgroundColor: '#ece9e9',
           height: '15rem',

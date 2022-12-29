@@ -11,7 +11,8 @@ const ProfilePage = (): JSX.Element => {
       maxWidth={false}
       sx={{
         backgroundColor: '#2363eb',
-        minHeight: '100vh',
+        minHeight: '100%',
+        position: 'fixed',
       }}
     >
       <Box

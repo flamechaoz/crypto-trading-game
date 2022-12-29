@@ -56,7 +56,7 @@ const Header = (): JSX.Element => {
   return (
     <>
       <AppBar position="static" sx={{ backgroundColor: '#fff' }}>
-        <Container maxWidth="lg">
+        <Container>
           <Toolbar>
             <Typography variant="h6" onClick={() => navigate('/')} sx={{ cursor: 'pointer', color: '#222' }}>
               CodevoWeb
