@@ -1,6 +1,16 @@
 import { Box, Container, Typography } from '@mui/material';
+import { AdvancedChart } from 'react-tradingview-embed';
 
 const TradePage = (): JSX.Element => {
+  const tvWidgetProps = {
+    interval: '1D',
+    theme: 'dark',
+    style: '1',
+    save_image: false,
+    symbol: 'BTCUSD',
+    studies: ['TripleEMA@tv-basicstudies'],
+  };
+
   return (
     <Container
       maxWidth={false}
@@ -26,6 +36,7 @@ const TradePage = (): JSX.Element => {
           Trading Page
         </Typography>
       </Box>
+      <AdvancedChart widgetProps={tvWidgetProps} />
     </Container>
   );
 };
