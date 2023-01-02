@@ -59,7 +59,7 @@ const Header = (): JSX.Element => {
         <Container>
           <Toolbar>
             <Typography variant="h6" onClick={() => navigate('/')} sx={{ cursor: 'pointer', color: '#222' }}>
-              CodevoWeb
+              CryptoTradingGame
             </Typography>
             <Box display="flex" sx={{ ml: 'auto' }}>
               {user == null && (
@@ -74,6 +74,9 @@ const Header = (): JSX.Element => {
                 <>
                   <LoadingButton loading={isLoading} onClick={() => navigate('/profile')}>
                     Profile
+                  </LoadingButton>
+                  <LoadingButton loading={isLoading} onClick={() => navigate('/trade')}>
+                    Trade
                   </LoadingButton>
                   <LoadingButton onClick={onLogoutHandler} loading={isLoading}>
                     Logout

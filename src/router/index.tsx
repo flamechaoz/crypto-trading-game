@@ -7,6 +7,7 @@ import RequireUser from '../components/requireUser';
 import RequireNoUser from '../components/requireNoUser';
 import HomePage from '../pages/home.page';
 import ProfilePage from '../pages/profile.page';
+import TradePage from '../pages/trade.page';
 
 const Loadable = (Component: React.ComponentType<any>) => (props: JSX.IntrinsicAttributes) =>
   (
@@ -71,6 +72,16 @@ const normalRoutes: RouteObject = {
         {
           path: '',
           element: <ProfilePage />,
+        },
+      ],
+    },
+    {
+      path: 'trade',
+      element: <RequireUser allowedRoles={['user', 'admin']} />,
+      children: [
+        {
+          path: '',
+          element: <TradePage />,
         },
       ],
     },
