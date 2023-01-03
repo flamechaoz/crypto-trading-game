@@ -1,5 +1,5 @@
 import { Box, Container, Grid, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AdvancedChart } from 'react-tradingview-embed';
 
 const TopBar = (): JSX.Element => {
@@ -34,18 +34,30 @@ const LiveChart = (): JSX.Element => {
 
 const LivePriceTicker = (): JSX.Element => {
   const [price, setPrice] = useState(0);
-  const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@trade');
+  const [color, setColor] = useState('black');
 
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    try {
-      setPrice(Number.parseFloat(data.p).toFixed(2));
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const COLOR_GREEN = 'rgb(14 203 129)';
+  const COLOR_RED = 'rgb(246 70 93)';
 
-  return <Typography>{price}</Typography>;
+  useEffect(() => {
+    const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@trade');
+    let lastPrice = 0;
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      try {
+        const newPrice = parseFloat(data.p).toFixed(2);
+        setPrice(newPrice);
+        const newColor = lastPrice > newPrice ? COLOR_RED : COLOR_GREEN;
+        setColor(newColor);
+        lastPrice = newPrice;
+      } catch (err) {
+        console.log(err);
+      }
+    };
+  }, []);
+
+  return <Typography color={color}>{price}</Typography>;
 };
 
 const Orders = (): JSX.Element => {
