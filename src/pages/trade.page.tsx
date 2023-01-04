@@ -1,6 +1,11 @@
-import { Box, Container, Grid, Typography } from '@mui/material';
+import { Box, Container, Grid, Popover, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { AdvancedChart } from 'react-tradingview-embed';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { currencyFormatter } from '../utils/formatter';
+
+const COLOR_GREEN = 'rgb(14 203 129)';
+const COLOR_RED = 'rgb(246 70 93)';
 
 const TopBar = (): JSX.Element => {
   return (
@@ -16,12 +21,46 @@ const TopBar = (): JSX.Element => {
 };
 
 const TokenMenu = (): JSX.Element => {
-  return <Typography>Menu</Typography>;
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = (): void => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
+  return (
+    <>
+      <Box sx={{ textAlign: 'center', paddingY: '1rem', paddingX: '2rem' }}>
+        <Typography variant="h5" sx={{ cursor: 'pointer' }} onClick={handleClick}>
+          BTC/USDT
+          <ArrowDropDownIcon />
+        </Typography>
+      </Box>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+      >
+        <Typography sx={{ p: '0.6rem' }}>Token list here.</Typography>
+      </Popover>
+    </>
+  );
 };
 
 const LiveChart = (): JSX.Element => {
   const tvWidgetProps = {
-    interval: '1D',
+    interval: '5',
     theme: 'dark',
     style: '1',
     save_image: false,
@@ -34,10 +73,7 @@ const LiveChart = (): JSX.Element => {
 
 const LivePriceTicker = (): JSX.Element => {
   const [price, setPrice] = useState(0);
-  const [color, setColor] = useState('black');
-
-  const COLOR_GREEN = 'rgb(14 203 129)';
-  const COLOR_RED = 'rgb(246 70 93)';
+  const [color, setColor] = useState();
 
   useEffect(() => {
     const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@trade');
@@ -46,7 +82,7 @@ const LivePriceTicker = (): JSX.Element => {
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       try {
-        const newPrice = parseFloat(data.p).toFixed(2);
+        const newPrice = parseFloat(parseFloat(data.p).toFixed(2));
         setPrice(newPrice);
         const newColor = lastPrice > newPrice ? COLOR_RED : COLOR_GREEN;
         setColor(newColor);
@@ -57,7 +93,53 @@ const LivePriceTicker = (): JSX.Element => {
     };
   }, []);
 
-  return <Typography color={color}>{price}</Typography>;
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center', height: '100%', paddingX: '1rem' }}>
+      <Grid direction="row" container alignItems="center">
+        <Grid item xs={2} direction="column" alignItems="center" justifyContent="center">
+          <Typography color={color}>{price}</Typography>
+          <Typography variant="subtitle1">{currencyFormatter.format(price)}</Typography>
+        </Grid>
+
+        <Grid item xs={2} direction="column" alignItems="center" justifyContent="center">
+          <Typography variant="subtitle1" color="#848e9c">
+            24h Change
+          </Typography>
+          <Typography variant="subtitle1" color={COLOR_GREEN}>
+            264.71 +1.59%
+          </Typography>
+        </Grid>
+
+        <Grid item xs={2} direction="column" alignItems="center" justifyContent="center">
+          <Typography variant="subtitle1" color="#848e9c">
+            24h High
+          </Typography>
+          <Typography variant="subtitle1">264.71 +1.59%</Typography>
+        </Grid>
+
+        <Grid item xs={2} direction="column" alignItems="center" justifyContent="center">
+          <Typography variant="subtitle1" color="#848e9c">
+            24h Low
+          </Typography>
+          <Typography variant="subtitle1">264.71 +1.59%</Typography>
+        </Grid>
+
+        <Grid item xs={2} direction="column" alignItems="center" justifyContent="center">
+          <Typography variant="subtitle1" color="#848e9c">
+            24h Volume(BTC)
+          </Typography>
+          <Typography variant="subtitle1">264.71 +1.59%</Typography>
+        </Grid>
+
+        <Grid item xs={2} direction="column" alignItems="center" justifyContent="center">
+          <Typography variant="subtitle1" color="#848e9c">
+            24h Volume(USDT)
+          </Typography>
+          <Typography variant="subtitle1">264.71 +1.59%</Typography>
+        </Grid>
+      </Grid>
+    </Box>
+  );
 };
 
 const Orders = (): JSX.Element => {
@@ -67,11 +149,6 @@ const Orders = (): JSX.Element => {
         sx={{
           width: '100%',
           height: '100%',
-          backgroundColor: 'primary.dark',
-          '&:hover': {
-            backgroundColor: 'primary.main',
-            opacity: [0.9, 0.8, 0.7],
-          },
         }}
       >
         Order Book
@@ -87,10 +164,6 @@ const BuySellForm = (): JSX.Element => {
         sx={{
           width: '100%',
           height: '100%',
-          backgroundColor: 'primary.dark',
-          '&:hover': {
-            backgroundColor: 'primary.main',
-          },
         }}
       >
         Buy/Sell
@@ -104,7 +177,6 @@ const TradePage = (): JSX.Element => {
     <Container
       maxWidth={false}
       sx={{
-        backgroundColor: '#2363eb',
         minHeight: '100%',
         position: 'fixed',
         padding: '0px 0px !important',

@@ -10,9 +10,7 @@ import Cookies from 'universal-cookie';
 
 const LoadingButton = styled(_LoadingButton)`
   padding: 0.4rem;
-  color: #222;
   font-weight: 500;
-
   &:hover {
     transform: translateY(-2px);
   }
@@ -55,10 +53,10 @@ const Header = (): JSX.Element => {
 
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: '#fff' }}>
+      <AppBar color="transparent" position="static">
         <Container>
           <Toolbar>
-            <Typography variant="h6" onClick={() => navigate('/')} sx={{ cursor: 'pointer', color: '#222' }}>
+            <Typography variant="h6" onClick={() => navigate('/')} sx={{ cursor: 'pointer' }}>
               CryptoTradingGame
             </Typography>
             <Box display="flex" sx={{ ml: 'auto' }}>

@@ -13,12 +13,9 @@ import { verifyEmailFn } from '../api/authApi';
 
 const LoadingButton = styled(_LoadingButton)`
   padding: 0.6rem 0;
-  background-color: #f9d13e;
-  color: #2363eb;
   font-weight: 500;
 
   &:hover {
-    background-color: #ebc22c;
     transform: translateY(-2px);
   }
 `;
@@ -95,7 +92,6 @@ const EmailVerificationPage = (): JSX.Element => {
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: '100vh',
-        backgroundColor: '#2363eb',
       }}
     >
       <Box
@@ -110,7 +106,6 @@ const EmailVerificationPage = (): JSX.Element => {
           textAlign="center"
           component="h1"
           sx={{
-            color: '#f9d13e',
             fontWeight: 600,
             fontSize: { xs: '2rem', md: '3rem' },
             mb: 2,
@@ -129,7 +124,6 @@ const EmailVerificationPage = (): JSX.Element => {
             maxWidth="27rem"
             width="100%"
             sx={{
-              backgroundColor: '#e5e7eb',
               p: { xs: '1rem', sm: '2rem' },
               borderRadius: 2,
             }}

@@ -10,7 +10,6 @@ const ProfilePage = (): JSX.Element => {
     <Container
       maxWidth={false}
       sx={{
-        backgroundColor: '#2363eb',
         minHeight: '100%',
         position: 'fixed',
       }}
@@ -18,7 +17,6 @@ const ProfilePage = (): JSX.Element => {
       <Box
         maxWidth="lg"
         sx={{
-          backgroundColor: '#ece9e9',
           maxHeight: '20rem',
           display: 'flex',
           flexDirection: 'column',
@@ -27,7 +25,7 @@ const ProfilePage = (): JSX.Element => {
           mx: 'auto',
         }}
       >
-        <Typography variant="h2" component="h1" sx={{ color: '#1f1e1e', fontWeight: 500 }}>
+        <Typography variant="h2" component="h1" sx={{ fontWeight: 500 }}>
           Profile Page
         </Typography>
         <Box sx={{ mt: 2 }}>

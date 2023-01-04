@@ -15,19 +15,15 @@ import { useStateContext } from '../context';
 
 const LoadingButton = styled(_LoadingButton)`
   padding: 0.6rem 0;
-  background-color: #f9d13e;
-  color: #2363eb;
   font-weight: 500;
 
   &:hover {
-    background-color: #ebc22c;
     transform: translateY(-2px);
   }
 `;
 
 const LinkItem = styled(Link)`
   text-decoration: none;
-  color: #2363eb;
   &:hover {
     text-decoration: underline;
   }
@@ -108,7 +104,6 @@ const LoginPage = (): JSX.Element => {
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: '100vh',
-        backgroundColor: '#2363eb',
       }}
     >
       <Box
@@ -123,7 +118,6 @@ const LoginPage = (): JSX.Element => {
           textAlign="center"
           component="h1"
           sx={{
-            color: '#f9d13e',
             fontWeight: 600,
             fontSize: { xs: '2rem', md: '3rem' },
             mb: 2,
@@ -132,7 +126,7 @@ const LoginPage = (): JSX.Element => {
         >
           Welcome Back!
         </Typography>
-        <Typography variant="body1" component="h2" sx={{ color: '#e5e7eb', mb: 2 }}>
+        <Typography variant="body1" component="h2" sx={{ mb: 2 }}>
           Login to have access!
         </Typography>
 
@@ -145,7 +139,6 @@ const LoginPage = (): JSX.Element => {
             maxWidth="27rem"
             width="100%"
             sx={{
-              backgroundColor: '#e5e7eb',
               p: { xs: '1rem', sm: '2rem' },
               borderRadius: 2,
             }}
@@ -154,9 +147,7 @@ const LoginPage = (): JSX.Element => {
             <FormInput name="password" label="Password" type="password" />
 
             <Typography sx={{ fontSize: '0.9rem', mb: '1rem', textAlign: 'right' }}>
-              <LinkItem to="/" style={{ color: '#333' }}>
-                Forgot Password?
-              </LinkItem>
+              <LinkItem to="/">Forgot Password?</LinkItem>
             </Typography>
 
             <LoadingButton variant="contained" sx={{ mt: 1 }} fullWidth disableElevation type="submit" loading={isLoading}>

@@ -1,13 +1,6 @@
-import { FormHelperText, Typography, FormControl, Input as _Input, InputProps } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { FormHelperText, Typography, FormControl, OutlinedInput as Input, InputProps } from '@mui/material';
 import { FC } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-
-const Input = styled(_Input)`
-  background-color: white;
-  padding: 0.4rem 0.7rem;
-  margin-bottom: 0.5rem;
-`;
 
 type IFormInputProps = {
   name: string;
@@ -27,7 +20,7 @@ const FormInput: FC<IFormInputProps> = ({ name, label, ...otherProps }) => {
       name={name}
       render={({ field }) => (
         <FormControl fullWidth sx={{ mb: 2 }}>
-          <Typography variant="body2" sx={{ color: '#2363eb', mb: 1, fontWeight: 500 }}>
+          <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
             {label}
           </Typography>
           <Input
@@ -37,6 +30,7 @@ const FormInput: FC<IFormInputProps> = ({ name, label, ...otherProps }) => {
             sx={{ borderRadius: '1rem' }}
             error={!(errors[name] == null)}
             {...otherProps}
+            color="primary"
           />
           <FormHelperText error={!(errors[name] == null)}>{errors[name] != null ? errors[name].message : ''}</FormHelperText>
         </FormControl>
