@@ -1,8 +1,9 @@
+/* eslint-disable prettier/prettier */
 import { Box, Container, Grid, Popover, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { AdvancedChart } from 'react-tradingview-embed';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { currencyFormatter } from '../utils/formatter';
+import { currencyFormatter, numberFormatter } from '../utils/formatter';
 
 const COLOR_GREEN = 'rgb(14 203 129)';
 const COLOR_RED = 'rgb(246 70 93)';
@@ -36,24 +37,24 @@ const TokenMenu = (): JSX.Element => {
 
   return (
     <>
-      <Box sx={{ textAlign: 'center', paddingY: '1rem', paddingX: '2rem' }}>
-        <Typography variant="h5" sx={{ cursor: 'pointer' }} onClick={handleClick}>
+      <Box sx={{ textAlign: 'center', paddingY: '1rem' }}>
+        <Typography variant="h5" sx={{ cursor: 'pointer', display: 'inline' }} onClick={handleClick} aria-describedby={id}>
           BTC/USDT
           <ArrowDropDownIcon />
         </Typography>
+        <Popover
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+        >
+          <Typography sx={{ p: '0.6rem' }}>Token list here.</Typography>
+        </Popover>
       </Box>
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-      >
-        <Typography sx={{ p: '0.6rem' }}>Token list here.</Typography>
-      </Popover>
     </>
   );
 };
@@ -71,6 +72,42 @@ const LiveChart = (): JSX.Element => {
   return <AdvancedChart widgetProps={tvWidgetProps} />;
 };
 
+const Token1Ticker = (): JSX.Element => {
+  return (
+    <>
+      <Grid container item xs={2} direction="column" alignItems="center" justifyContent="center">
+        <Typography variant="subtitle1" color="#848e9c">
+          24h Change
+        </Typography>
+        <Typography variant="subtitle1" color={COLOR_GREEN}>
+          264.71 +1.59%
+        </Typography>
+      </Grid>
+
+      <Grid container item xs={2} direction="column" alignItems="center" justifyContent="center">
+        <Typography variant="subtitle1" color="#848e9c">
+          24h High
+        </Typography>
+        <Typography variant="subtitle1">264.71 +1.59%</Typography>
+      </Grid>
+
+      <Grid container item xs={2} direction="column" alignItems="center" justifyContent="center">
+        <Typography variant="subtitle1" color="#848e9c">
+          24h Low
+        </Typography>
+        <Typography variant="subtitle1">264.71 +1.59%</Typography>
+      </Grid>
+
+      <Grid container item xs={2} direction="column" alignItems="center" justifyContent="center">
+        <Typography variant="subtitle1" color="#848e9c">
+          24h Volume(BTC)
+        </Typography>
+        <Typography variant="subtitle1">264.71 +1.59%</Typography>
+      </Grid>
+    </>
+  );
+};
+
 const LivePriceTicker = (): JSX.Element => {
   const [price, setPrice] = useState(0);
   const [color, setColor] = useState();
@@ -82,7 +119,7 @@ const LivePriceTicker = (): JSX.Element => {
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       try {
-        const newPrice = parseFloat(parseFloat(data.p).toFixed(2));
+        const newPrice = data.p;
         setPrice(newPrice);
         const newColor = lastPrice > newPrice ? COLOR_RED : COLOR_GREEN;
         setColor(newColor);
@@ -94,44 +131,16 @@ const LivePriceTicker = (): JSX.Element => {
   }, []);
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', height: '100%', paddingX: '1rem' }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', height: '100%', paddingRight: '1rem' }}>
       <Grid direction="row" container alignItems="center">
-        <Grid item xs={2} direction="column" alignItems="center" justifyContent="center">
-          <Typography color={color}>{price}</Typography>
+        <Grid container item xs={2} direction="column" alignItems="center" justifyContent="center">
+          <Typography color={color}>{numberFormatter.format(price)}</Typography>
           <Typography variant="subtitle1">{currencyFormatter.format(price)}</Typography>
         </Grid>
 
-        <Grid item xs={2} direction="column" alignItems="center" justifyContent="center">
-          <Typography variant="subtitle1" color="#848e9c">
-            24h Change
-          </Typography>
-          <Typography variant="subtitle1" color={COLOR_GREEN}>
-            264.71 +1.59%
-          </Typography>
-        </Grid>
+        <Token1Ticker />
 
-        <Grid item xs={2} direction="column" alignItems="center" justifyContent="center">
-          <Typography variant="subtitle1" color="#848e9c">
-            24h High
-          </Typography>
-          <Typography variant="subtitle1">264.71 +1.59%</Typography>
-        </Grid>
-
-        <Grid item xs={2} direction="column" alignItems="center" justifyContent="center">
-          <Typography variant="subtitle1" color="#848e9c">
-            24h Low
-          </Typography>
-          <Typography variant="subtitle1">264.71 +1.59%</Typography>
-        </Grid>
-
-        <Grid item xs={2} direction="column" alignItems="center" justifyContent="center">
-          <Typography variant="subtitle1" color="#848e9c">
-            24h Volume(BTC)
-          </Typography>
-          <Typography variant="subtitle1">264.71 +1.59%</Typography>
-        </Grid>
-
-        <Grid item xs={2} direction="column" alignItems="center" justifyContent="center">
+        <Grid container item xs={2} direction="column" alignItems="center" justifyContent="center">
           <Typography variant="subtitle1" color="#848e9c">
             24h Volume(USDT)
           </Typography>
@@ -184,8 +193,8 @@ const TradePage = (): JSX.Element => {
     >
       <Grid container>
         <Grid item xs={8}>
-          <Grid item direction="column">
-            <Grid item>
+          <Grid container item direction="column">
+            <Grid item container>
               <TopBar />
             </Grid>
             <Grid item>
