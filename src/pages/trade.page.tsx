@@ -1,5 +1,9 @@
-/* eslint-disable prettier/prettier */
 import { Box, Container, Grid, Popover, Typography } from '@mui/material';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 import { useEffect, useState } from 'react';
 import { AdvancedChart } from 'react-tradingview-embed';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -134,7 +138,7 @@ const LivePriceTicker = (): JSX.Element => {
     <Box sx={{ display: 'flex', alignItems: 'center', height: '100%', paddingRight: '1rem' }}>
       <Grid direction="row" container alignItems="center">
         <Grid container item xs={2} direction="column" alignItems="center" justifyContent="center">
-          <Typography color={color}>{numberFormatter.format(price)}</Typography>
+          <Typography color={color}>{numberFormatter(price, 2)}</Typography>
           <Typography variant="subtitle1">{currencyFormatter.format(price)}</Typography>
         </Grid>
 
@@ -152,17 +156,84 @@ const LivePriceTicker = (): JSX.Element => {
 };
 
 const Orders = (): JSX.Element => {
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcbusd@depth');
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      try {
+        setOrders(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+  }, []);
+
   return (
-    <>
-      <Box
-        sx={{
-          width: '100%',
-          height: '100%',
-        }}
-      >
-        Order Book
-      </Box>
-    </>
+    <Box sx={{ width: '100%', height: '100%', padding: '1rem' }}>
+      <Grid container direction="column">
+        <Grid item>
+          <Typography>Order Book</Typography>
+        </Grid>
+        <Grid item>
+          <Table size="small" sx={{ width: '100%' }}>
+            <TableHead sx={{ th: { border: 0 } }}>
+              <TableRow>
+                <TableCell>
+                  <Typography variant="subtitle1" color="#848e9c">
+                    Price(USDT)
+                  </Typography>
+                </TableCell>
+                <TableCell align="right">
+                  <Typography variant="subtitle1" color="#848e9c">
+                    Amount(BTC)
+                  </Typography>
+                </TableCell>
+                <TableCell align="right">
+                  <Typography variant="subtitle1" color="#848e9c">
+                    Total
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {orders.a?.map(function (row: number[], index: number) {
+                if (row[1] > 0) {
+                  return (
+                    <TableRow
+                      key={index}
+                      sx={{
+                        td: { border: 0, width: '300px', paddingBottom: '0' },
+                        '&:last-child td': { paddingBottom: '6px' },
+                      }}
+                    >
+                      <TableCell>
+                        <Typography variant="subtitle1" color={COLOR_RED}>
+                          {numberFormatter(row[0], 2)}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="right">
+                        <Typography variant="subtitle1" color="#b7bdc6">
+                          {numberFormatter(row[1], 5)}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="right">
+                        <Typography variant="subtitle1" color="#b7bdc6">
+                          {numberFormatter(row[0] * row[1], 5)}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  );
+                }
+                return null;
+              })}
+            </TableBody>
+          </Table>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 
