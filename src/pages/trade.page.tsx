@@ -156,15 +156,48 @@ const LivePriceTicker = (): JSX.Element => {
 };
 
 const Orders = (): JSX.Element => {
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState({ a: [], b: [] });
+  const [price, setPrice] = useState(0);
+  const [color, setColor] = useState();
 
   useEffect(() => {
-    const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcbusd@depth');
+    const wsOrders = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@depth');
+    const wsPrice = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@trade');
+    let lastPrice = 0;
 
-    ws.onmessage = (event) => {
+    wsOrders.onmessage = (event) => {
       const data = JSON.parse(event.data);
       try {
-        setOrders(data);
+        const tempOrders = {
+          a: [],
+          b: [],
+        };
+        for (let index = data.a.length - 1, counter = 0; counter < 10; index--) {
+          if (data.a[index][1] > 0) {
+            tempOrders.a.push(data.a[index]);
+            counter++;
+          }
+        }
+        for (let index = 0, counter = 0; counter < 10; index++) {
+          if (data.b[index][1] > 0) {
+            tempOrders.b.push(data.b[index]);
+            counter++;
+          }
+        }
+        setOrders(tempOrders);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    wsPrice.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      try {
+        const newPrice = data.p;
+        setPrice(newPrice);
+        const newColor = lastPrice > newPrice ? COLOR_RED : COLOR_GREEN;
+        setColor(newColor);
+        lastPrice = newPrice;
       } catch (err) {
         console.log(err);
       }
@@ -200,34 +233,67 @@ const Orders = (): JSX.Element => {
             </TableHead>
             <TableBody>
               {orders.a?.map(function (row: number[], index: number) {
-                if (row[1] > 0) {
-                  return (
-                    <TableRow
-                      key={index}
-                      sx={{
-                        td: { border: 0, width: '300px', paddingBottom: '0' },
-                        '&:last-child td': { paddingBottom: '6px' },
-                      }}
-                    >
-                      <TableCell>
-                        <Typography variant="subtitle1" color={COLOR_RED}>
-                          {numberFormatter(row[0], 2)}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="right">
-                        <Typography variant="subtitle1" color="#b7bdc6">
-                          {numberFormatter(row[1], 5)}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="right">
-                        <Typography variant="subtitle1" color="#b7bdc6">
-                          {numberFormatter(row[0] * row[1], 5)}
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  );
-                }
-                return null;
+                return (
+                  <TableRow
+                    key={index}
+                    sx={{
+                      td: { border: 0, width: '300px', paddingBottom: '0' },
+                      '&:last-child td': { paddingBottom: '6px' },
+                    }}
+                  >
+                    <TableCell>
+                      <Typography variant="subtitle1" color={COLOR_RED}>
+                        {numberFormatter(row[0], 2)}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="subtitle1" color="#b7bdc6">
+                        {numberFormatter(row[1], 5)}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="subtitle1" color="#b7bdc6">
+                        {numberFormatter(row[0] * row[1], 5)}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+          <Box sx={{ paddingLeft: '1rem' }}>
+            <Typography variant="h5" color={color}>
+              {numberFormatter(price, 2)}
+            </Typography>
+          </Box>
+          <Table size="small">
+            <TableBody>
+              {orders.b?.map(function (row: number[], index: number) {
+                return (
+                  <TableRow
+                    key={index}
+                    sx={{
+                      td: { border: 0, width: '300px', paddingBottom: '0' },
+                      '&:last-child td': { paddingBottom: '6px' },
+                    }}
+                  >
+                    <TableCell>
+                      <Typography variant="subtitle1" color={COLOR_GREEN}>
+                        {numberFormatter(row[0], 2)}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="subtitle1" color="#b7bdc6">
+                        {numberFormatter(row[1], 5)}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="subtitle1" color="#b7bdc6">
+                        {numberFormatter(row[0] * row[1], 5)}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                );
               })}
             </TableBody>
           </Table>
