@@ -116,7 +116,7 @@ const RegisterPage = (): JSX.Element => {
             letterSpacing: 1,
           }}
         >
-          Welcome to CodevoWeb!
+          Welcome to CryptoTradingGame!
         </Typography>
         <Typography component="h2" sx={{ mb: 2 }}>
           Sign Up To Get Started!
