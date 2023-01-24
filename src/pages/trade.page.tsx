@@ -356,14 +356,7 @@ const BuySellForm = (): JSX.Element => {
     <Box sx={{ width: '100%', height: '100%', padding: '1rem' }}>
       <Grid container direction="column">
         <Grid item>
-          <ToggleButtonGroup
-            fullWidth={true}
-            size="small"
-            value={orderType}
-            exclusive
-            onChange={handleChange}
-            aria-label="Platform"
-          >
+          <ToggleButtonGroup fullWidth={true} value={orderType} exclusive onChange={handleChange} aria-label="Platform">
             <ToggleButton color="success" value="buy">
               BUY
             </ToggleButton>
@@ -412,7 +405,7 @@ const BuySellForm = (): JSX.Element => {
           ></Slider>
         </Grid>
         <Grid item sx={{ marginTop: '1rem' }}>
-          <Button fullWidth variant="contained" color="success">
+          <Button fullWidth variant="contained" color="success" size="large">
             BUY
           </Button>
         </Grid>
