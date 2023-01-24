@@ -172,13 +172,13 @@ const Orders = (): JSX.Element => {
           a: [],
           b: [],
         };
-        for (let index = data.a.length - 1, counter = 0; counter < 10; index--) {
+        for (let index = data.a.length - 1, counter = 0; counter < 14; index--) {
           if (data.a[index][1] > 0) {
             tempOrders.a.push(data.a[index]);
             counter++;
           }
         }
-        for (let index = 0, counter = 0; counter < 10; index++) {
+        for (let index = 0, counter = 0; counter < 14; index++) {
           if (data.b[index][1] > 0) {
             tempOrders.b.push(data.b[index]);
             counter++;
@@ -211,47 +211,46 @@ const Orders = (): JSX.Element => {
           <Typography>Order Book</Typography>
         </Grid>
         <Grid item>
-          <Table size="small" sx={{ width: '100%' }}>
-            <TableHead sx={{ th: { border: 0 } }}>
+          <Table size="small" sx={{ tableLayout: 'fixed', marginTop: '0.5rem' }}>
+            <TableHead sx={{ th: { border: 0, padding: 0, paddingBottom: '0.5rem' } }}>
               <TableRow>
-                <TableCell>
+                <TableCell width="30%">
                   <Typography variant="subtitle1" color="#848e9c">
                     Price(USDT)
                   </Typography>
                 </TableCell>
-                <TableCell align="right">
+                <TableCell width="30%" align="right">
                   <Typography variant="subtitle1" color="#848e9c">
                     Amount(BTC)
                   </Typography>
                 </TableCell>
-                <TableCell align="right">
+                <TableCell width="40%" align="right">
                   <Typography variant="subtitle1" color="#848e9c">
                     Total
                   </Typography>
                 </TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody sx={{ td: { padding: 0 } }}>
               {orders.a?.map(function (row: number[], index: number) {
                 return (
                   <TableRow
                     key={index}
                     sx={{
                       td: { border: 0, width: '300px', paddingBottom: '0' },
-                      '&:last-child td': { paddingBottom: '6px' },
                     }}
                   >
-                    <TableCell>
+                    <TableCell width="24%">
                       <Typography variant="subtitle1" color={COLOR_RED}>
                         {numberFormatter(row[0], 2)}
                       </Typography>
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell width="30%" align="right">
                       <Typography variant="subtitle1" color="#b7bdc6">
                         {numberFormatter(row[1], 5)}
                       </Typography>
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell width="46%" align="right">
                       <Typography variant="subtitle1" color="#b7bdc6">
                         {numberFormatter(row[0] * row[1], 5)}
                       </Typography>
@@ -261,33 +260,33 @@ const Orders = (): JSX.Element => {
               })}
             </TableBody>
           </Table>
-          <Box sx={{ paddingLeft: '1rem' }}>
+          <Box sx={{ padding: '0.5rem', paddingLeft: '1rem' }}>
             <Typography variant="h5" color={color}>
               {numberFormatter(price, 2)}
             </Typography>
           </Box>
-          <Table size="small">
-            <TableBody>
+          <Table size="small" sx={{ tableLayout: 'fixed' }}>
+            <TableBody sx={{ td: { padding: 0 } }}>
               {orders.b?.map(function (row: number[], index: number) {
                 return (
                   <TableRow
                     key={index}
                     sx={{
-                      td: { border: 0, width: '300px', paddingBottom: '0' },
+                      td: { border: 0, paddingBottom: '0' },
                       '&:last-child td': { paddingBottom: '6px' },
                     }}
                   >
-                    <TableCell>
+                    <TableCell width="30%">
                       <Typography variant="subtitle1" color={COLOR_GREEN}>
                         {numberFormatter(row[0], 2)}
                       </Typography>
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell width="30%" align="right">
                       <Typography variant="subtitle1" color="#b7bdc6">
                         {numberFormatter(row[1], 5)}
                       </Typography>
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell width="40%" align="right">
                       <Typography variant="subtitle1" color="#b7bdc6">
                         {numberFormatter(row[0] * row[1], 5)}
                       </Typography>
