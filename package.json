@@ -27,7 +27,6 @@
     "prettier": "^2.8.1",
     "react": "^18.2.0",
     "react-cookie": "^4.1.1",
-    "react-crypto-icons": "^1.0.5",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.41.0",
     "react-query": "^3.39.2",
@@ -41,6 +40,7 @@
     "stylelint-config-recess-order": "^3.0.0",
     "stylelint-config-standard": "^29.0.0",
     "universal-cookie": "^4.0.4",
+    "vite-plugin-svgr": "^2.4.0",
     "zod": "^3.20.2"
   },
   "devDependencies": {
