@@ -39,3 +39,16 @@ export interface IUserResponse {
     user: IUser;
   };
 }
+
+export interface IWalletBalance {
+  id: string;
+  wallet: string;
+  balance: number;
+  currency: string;
+}
+
+export interface IWallet {
+  id: string;
+  userID: string;
+  walletBalances: IWalletBalance[];
+}
