@@ -1,4 +1,7 @@
 import { Box, Container, Typography } from '@mui/material';
+import { BitcoinIcon } from '../components/CustomIcons/BitcoinIcon';
+import { EthereumIcon } from '../components/CustomIcons/EthereumIcon';
+import { UsdtIcon } from '../components/CustomIcons/UsdtIcon';
 import { useStateContext } from '../context';
 
 const ProfilePage = (): JSX.Element => {
@@ -7,26 +10,16 @@ const ProfilePage = (): JSX.Element => {
   const user = stateContext?.state.authUser;
 
   return (
-    <Container
-      maxWidth={false}
-      sx={{
-        minHeight: '100%',
-        position: 'fixed',
-      }}
-    >
+    <Container maxWidth={false} sx={{ minHeight: '100%', pt: '1.5rem' }}>
       <Box
-        maxWidth="lg"
         sx={{
-          maxHeight: '20rem',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          p: '2rem',
-          mx: 'auto',
         }}
       >
-        <Typography variant="h2" component="h1" sx={{ fontWeight: 500 }}>
-          Profile Page
+        <Typography variant="h4" component="h1" sx={{ fontWeight: 500 }}>
+          Profile
         </Typography>
         <Box sx={{ mt: 2 }}>
           <Typography gutterBottom>

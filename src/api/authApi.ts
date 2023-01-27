@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { LoginInput } from '../pages/login.page';
 import { RegisterInput } from '../pages/register.page';
-import { ITokens, IAuthResponse, IUser } from './types';
+import { ITokens, IAuthResponse, IUser, ITokenPairBalanceResponse } from './types';
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const authApi = axios.create({
@@ -74,5 +74,16 @@ export const logoutUserFn = async (myRefreshToken: string): Promise<void> => {
 
 export const getMeFn = async (userID: string): Promise<IUser> => {
   const response = await authApi.get<IUser>(`users/${userID}`);
+  return response.data;
+};
+
+export const getTokenPairBalanceFn = async (
+  tokenPair: string,
+  userID: string,
+  type: string
+): Promise<ITokenPairBalanceResponse> => {
+  const response = await authApi.get<ITokenPairBalanceResponse>(
+    `wallets/getTokenPairBalance/${tokenPair}/${userID}?type=${type}`
+  );
   return response.data;
 };

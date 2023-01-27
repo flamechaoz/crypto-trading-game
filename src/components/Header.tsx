@@ -73,6 +73,9 @@ const Header = (): JSX.Element => {
                   <LoadingButton loading={isLoading} onClick={() => navigate('/profile')}>
                     Profile
                   </LoadingButton>
+                  <LoadingButton loading={isLoading} onClick={() => navigate('/wallet')}>
+                    Wallet
+                  </LoadingButton>
                   <LoadingButton loading={isLoading} onClick={() => navigate('/trade')}>
                     Trade
                   </LoadingButton>

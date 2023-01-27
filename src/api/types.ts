@@ -52,3 +52,8 @@ export interface IWallet {
   userID: string;
   walletBalances: IWalletBalance[];
 }
+
+export interface ITokenPairBalanceResponse {
+  token1: IWalletBalance | null;
+  token2: IWalletBalance | null;
+}

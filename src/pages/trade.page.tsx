@@ -1,11 +1,9 @@
 import {
   Box,
-  Button,
   Container,
   FormControl,
   Grid,
   InputAdornment,
-  InputLabel,
   OutlinedInput,
   Popover,
   Slider,
@@ -13,15 +11,20 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AdvancedChart } from 'react-tradingview-embed';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { currencyFormatter, numberFormatter } from '../utils/formatter';
+import { useQuery } from 'react-query';
+import { getTokenPairBalanceFn } from '../api/authApi';
+import { useCookies } from 'react-cookie';
+import { IWalletBalance } from '../api/types';
 
 const COLOR_GREEN = 'rgb(14 203 129)';
 const COLOR_RED = 'rgb(246 70 93)';
@@ -317,7 +320,13 @@ const Orders = (): JSX.Element => {
 };
 
 const BuySellForm = (): JSX.Element => {
+  const [cookies] = useCookies();
+  const [token1Balance, setToken1Balance] = useState<IWalletBalance | null>(null);
+  const [token2Balance, setToken2Balance] = useState<IWalletBalance | null>(null);
   const [orderType, setOrderType] = useState('buy');
+
+  const token1 = 'BTC';
+  const token2 = 'USDT';
 
   const marks = [
     {
@@ -352,6 +361,26 @@ const BuySellForm = (): JSX.Element => {
     return `${value}%`;
   }
 
+  const {
+    isLoading,
+    isFetching,
+    data: tokenPairBalance,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+  } = useQuery(
+    ['tokenPairBalance', cookies.user],
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+    async () => await getTokenPairBalanceFn('BTC_USDT', cookies.user.id, 'main'),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        setToken1Balance(data.token1);
+        setToken2Balance(data.token2);
+      },
+    }
+  );
+
+  const loading = isLoading || isFetching;
+
   return (
     <Box sx={{ width: '100%', height: '100%', padding: '1rem' }}>
       <Grid container direction="column">
@@ -365,13 +394,19 @@ const BuySellForm = (): JSX.Element => {
             </ToggleButton>
           </ToggleButtonGroup>
         </Grid>
-        <Grid item direction="row" sx={{ marginTop: '1rem' }}>
+        <Grid item sx={{ marginTop: '1rem' }}>
           <Typography variant="subtitle1" sx={{ display: 'inline', color: '#848e9c', marginRight: '0.5rem' }}>
             Available
           </Typography>
-          <Typography variant="subtitle1" sx={{ display: 'inline' }}>
-            - USDT
-          </Typography>
+          {orderType === 'buy' ? (
+            <Typography variant="subtitle1" sx={{ display: 'inline' }}>
+              {token2Balance != null ? `${token2Balance.balance} ${token2}` : `0 ${token2}`}
+            </Typography>
+          ) : (
+            <Typography variant="subtitle1" sx={{ display: 'inline' }}>
+              {token1Balance != null ? `${token1Balance.balance} ${token1}` : `0 ${token1}`}
+            </Typography>
+          )}
         </Grid>
         <Grid>
           <FormControl fullWidth sx={{ marginTop: '1rem' }}>
@@ -379,17 +414,18 @@ const BuySellForm = (): JSX.Element => {
               id="price"
               value="Market"
               startAdornment={<InputAdornment position="start">Price</InputAdornment>}
-              endAdornment={<InputAdornment position="end">USDT</InputAdornment>}
+              endAdornment={<InputAdornment position="end">{token2}</InputAdornment>}
               disabled
               sx={{ backgroundColor: 'black' }}
             />
           </FormControl>
           <FormControl fullWidth sx={{ marginTop: '1rem' }}>
             <OutlinedInput
-              id="amount"
+              id="total"
               color="primary"
-              startAdornment={<InputAdornment position="start">Amount</InputAdornment>}
-              endAdornment={<InputAdornment position="end">BTC</InputAdornment>}
+              startAdornment={<InputAdornment position="start">Total</InputAdornment>}
+              endAdornment={<InputAdornment position="end">{token2}</InputAdornment>}
+              inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
             />
           </FormControl>
         </Grid>
@@ -405,9 +441,15 @@ const BuySellForm = (): JSX.Element => {
           ></Slider>
         </Grid>
         <Grid item sx={{ marginTop: '1rem' }}>
-          <Button fullWidth variant="contained" color="success" size="large">
-            BUY
-          </Button>
+          <LoadingButton
+            loading={loading}
+            fullWidth
+            variant="contained"
+            color={orderType === 'buy' ? 'success' : 'error'}
+            size="large"
+          >
+            {orderType}
+          </LoadingButton>
         </Grid>
       </Grid>
     </Box>
